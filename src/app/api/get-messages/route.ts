@@ -45,7 +45,7 @@ export async function GET(request: Request) {
       { status: 200 }
     );
   } catch (error) {
-    console.log("Error in getting messages");
+    console.log("Error in getting messages: ", error);
     return Response.json(
       {
         success: false,
