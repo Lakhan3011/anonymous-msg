@@ -46,7 +46,7 @@ export async function GET(request: Request) {
           success: false,
           message: "Username is already taken",
         },
-        { status: 400 }
+        { status: 200 }
       );
     }
 
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
         success: true,
         message: "Username is unique",
       },
-      { status: 500 }
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error checking username", error);
