@@ -36,7 +36,7 @@ function UserDashboard() {
 
   const acceptMessages = watch("acceptMessages");
 
-  const fetchAcceptMessage = useCallback(async () => {
+  const fetchAcceptMessages = useCallback(async () => {
     setIsSwitchLoading(true);
     try {
       const response = await axios.get<ApiResponse>("/api/accept-messages");
@@ -74,7 +74,7 @@ function UserDashboard() {
         toast({
           title: "Error",
           description:
-            axiosError.response?.data.message ||
+            axiosError.response?.data.message ??
             "Failed to fetch message settings",
           variant: "destructive",
         });
@@ -83,14 +83,14 @@ function UserDashboard() {
         setIsSwitchLoading(false);
       }
     },
-    [setIsLoading, setMessages]
+    [setIsLoading, setMessages, toast]
   );
 
   useEffect(() => {
     if (!session || !session.user) return;
     fetchMessages();
-    fetchAcceptMessage();
-  }, [session, setValue, fetchAcceptMessage, fetchMessages]);
+    fetchAcceptMessages();
+  }, [session, setValue, toast, fetchAcceptMessages, fetchMessages]);
 
   // handle switch change
   const handleSwitchChange = async () => {
@@ -108,14 +108,18 @@ function UserDashboard() {
       toast({
         title: "Error",
         description:
-          axiosError.response?.data.message ||
-          "Failed to fetch message settings",
+          axiosError.response?.data.message ??
+          "Failed to update message settings",
         variant: "destructive",
       });
     }
   };
 
-  const { username } = session?.user as User;
+  if (!session || !session.user) {
+    return <div></div>;
+  }
+
+  const { username } = session.user as User;
   // TODO: do more research
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
@@ -128,9 +132,9 @@ function UserDashboard() {
     });
   };
 
-  if (!session || !session.user) {
-    return <div>Please Login...</div>;
-  }
+  // if (!session || !session.user) {
+  //   return <div>Please Login...</div>;
+  // }
 
   return (
     <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
