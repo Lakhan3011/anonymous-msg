@@ -14,14 +14,16 @@ export async function POST(request: Request) {
           success: false,
           message: "User not found",
         },
-        { status: 500 }
+        { status: 404 }
       );
     }
 
+    // Check if the code is correct and not expired
     const isCodeValid = user.verifyCode === code;
     const isCodeNotExpired = new Date(user.verifyCodeExpiry) > new Date();
 
     if (isCodeValid && isCodeNotExpired) {
+      // Update the user's verification status
       user.isVerified = true;
       await user.save();
       return Response.json(
@@ -41,6 +43,7 @@ export async function POST(request: Request) {
         { status: 400 }
       );
     } else {
+      // code is incorrect
       return Response.json(
         {
           success: false,

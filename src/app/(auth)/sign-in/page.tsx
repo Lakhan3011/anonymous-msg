@@ -11,10 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { signInSchema } from "@/schemas/signInSchema";
-import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios, { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -41,15 +38,25 @@ const page = () => {
       identifier: data.identifier,
       password: data.password,
     });
+    console.log("SignIn result", result);
     if (result?.error) {
-      toast({
-        title: "Login Failed",
-        description: "Incorrect username or password",
-        variant: "destructive",
-      });
+      if (result.error === "CredentialsSignin") {
+        toast({
+          title: "Login Failed",
+          description: "Incorrect username or password",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+      }
     }
 
     if (result?.url) {
+      console.log("Redirecting to dashboard");
       router.replace("/dashboard");
     }
   };
@@ -58,9 +65,11 @@ const page = () => {
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join Anonymous Message
+            Welcome Back to Anonymous Message
           </h1>
-          <p className="mb-4">Log in to start your anonymous adventure 🌴</p>
+          <p className="mb-4">
+            Log in to start your anonymous conversations 🤫
+          </p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className=" space-y-6">
@@ -96,12 +105,14 @@ const page = () => {
                 </FormItem>
               )}
             />
-            <Button type="submit">Login</Button>
+            <Button className="w-full" type="submit">
+              Login
+            </Button>
           </form>
         </Form>
         <div className="text-center mt-4">
           <p>
-            New member?{" "}
+            Not a member yet?{" "}
             <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
               Sign up
             </Link>
