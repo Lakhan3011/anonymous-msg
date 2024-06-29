@@ -12,11 +12,11 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const queryParam = {
+    const queryParams = {
       username: searchParams.get("username"),
     };
     //  validate with zod
-    const result = UsernameQuerySchema.safeParse(queryParam);
+    const result = UsernameQuerySchema.safeParse(queryParams);
     console.log(result); // TODO: remove
 
     if (!result.success) {
@@ -46,7 +46,7 @@ export async function GET(request: Request) {
           success: false,
           message: "Username is already taken",
         },
-        { status: 200 }
+        { status: 401 }
       );
     }
 
