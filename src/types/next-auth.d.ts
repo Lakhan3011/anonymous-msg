@@ -13,7 +13,7 @@ declare module "next-auth" {
       _id?: string;
       isVerified?: boolean;
       isAcceptingMessages?: boolean;
-      username?: string;
+      username: string;
     } & DefaultSession["user"];
   }
 }
